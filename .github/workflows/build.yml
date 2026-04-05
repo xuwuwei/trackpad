@@ -24,7 +24,7 @@ jobs:
           cache-dependency-path: link/package-lock.json
 
       - name: Install Rust
-        uses: dtolnay/rust-action@master
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Install dependencies
         working-directory: link
@@ -57,7 +57,7 @@ jobs:
           cache-dependency-path: link/package-lock.json
 
       - name: Install Rust
-        uses: dtolnay/rust-action@master
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Install dependencies
         working-directory: link
