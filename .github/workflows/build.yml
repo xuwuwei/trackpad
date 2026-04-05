@@ -10,7 +10,44 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-macos:
+  build-macos-intel:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: link/package-lock.json
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin
+
+      - name: Install dependencies
+        working-directory: link
+        run: npm ci
+
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2.0.0" --locked
+
+      - name: Build macOS Intel app
+        working-directory: link
+        run: cargo tauri build --target x86_64-apple-darwin
+
+      - name: Upload macOS Intel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-app-intel
+          path: |
+            link/target/x86_64-apple-darwin/release/bundle/**/*.dmg
+          if-no-files-found: warn
+
+  build-macos-arm:
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -35,25 +72,16 @@ jobs:
       - name: Install Tauri CLI
         run: cargo install tauri-cli --version "^2.0.0" --locked
 
-      - name: Build macOS app
+      - name: Build macOS Apple Silicon app
         working-directory: link
         run: cargo tauri build --target aarch64-apple-darwin
 
-      - name: List bundle directory
-        run: |
-          echo "=== Target structure ==="
-          find link/target -type d -name "bundle" 2>/dev/null || echo "No bundle dir"
-          echo ""
-          echo "=== All files in target ==="
-          find link/target -name "*.dmg" -o -name "*.app" 2>/dev/null | head -20
-
-      - name: Upload macOS artifact
+      - name: Upload macOS ARM artifact
         uses: actions/upload-artifact@v4
         with:
-          name: macos-app
+          name: macos-app-arm
           path: |
-            link/target/**/release/bundle/**/*.dmg
-            link/target/**/release/bundle/**/*.app
+            link/target/aarch64-apple-darwin/release/bundle/**/*.dmg
           if-no-files-found: warn
 
   build-windows:
@@ -83,31 +111,31 @@ jobs:
         working-directory: link
         run: cargo tauri build
 
-      - name: List bundle directory
-        shell: pwsh
-        run: |
-          Write-Host "=== Searching for bundle files ==="
-          Get-ChildItem -Path "link/target" -Recurse -Include "*.msi","*.exe" -ErrorAction SilentlyContinue | Select-Object -First 10 FullName
-
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-app
           path: |
-            link/target/**/release/bundle/**/*.msi
-            link/target/**/release/bundle/**/*.exe
+            link/target/release/bundle/**/*.msi
+            link/target/release/bundle/**/*.exe
           if-no-files-found: warn
 
   release:
-    needs: [build-macos, build-windows]
+    needs: [build-macos-intel, build-macos-arm, build-windows]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
-      - name: Download macOS artifact
+      - name: Download macOS Intel artifact
         uses: actions/download-artifact@v4
         with:
-          name: macos-app
-          path: ./artifacts/macos
+          name: macos-app-intel
+          path: ./artifacts/macos-intel
+
+      - name: Download macOS ARM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-app-arm
+          path: ./artifacts/macos-arm
 
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
@@ -119,9 +147,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ./artifacts/macos/**/*.dmg
-            ./artifacts/windows/**/*.msi
-            ./artifacts/windows/**/*.exe
+            ./artifacts/**/*.dmg
+            ./artifacts/**/*.msi
+            ./artifacts/**/*.exe
           draft: false
           prerelease: false
         env:
