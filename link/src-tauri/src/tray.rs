@@ -10,7 +10,6 @@ pub struct TrayItems {
     pub show:       MenuItem<tauri::Wry>,
     pub auto_start: MenuItem<tauri::Wry>,
     pub feedback:   MenuItem<tauri::Wry>,
-    pub help:       MenuItem<tauri::Wry>,
     pub quit:       MenuItem<tauri::Wry>,
 }
 
@@ -20,7 +19,6 @@ pub fn create_tray(app: &AppHandle, lang: &str) -> tauri::Result<TrayItems> {
     let show       = MenuItem::with_id(app, "show",       i.show,       true, None::<&str>)?;
     let auto_start = MenuItem::with_id(app, "auto_start", i.auto_start, true, None::<&str>)?;
     let feedback   = MenuItem::with_id(app, "feedback",   i.feedback,   true, None::<&str>)?;
-    let help       = MenuItem::with_id(app, "help",       i.help,       true, None::<&str>)?;
     let quit       = MenuItem::with_id(app, "quit",       i.quit,       true, None::<&str>)?;
 
     let menu = Menu::with_items(app, &[
@@ -29,7 +27,6 @@ pub fn create_tray(app: &AppHandle, lang: &str) -> tauri::Result<TrayItems> {
         &auto_start,
         &PredefinedMenuItem::separator(app)?,
         &feedback,
-        &help,
         &PredefinedMenuItem::separator(app)?,
         &quit,
     ])?;
@@ -63,7 +60,6 @@ pub fn create_tray(app: &AppHandle, lang: &str) -> tauri::Result<TrayItems> {
         show:       show.clone(),
         auto_start: auto_start.clone(),
         feedback:   feedback.clone(),
-        help:       help.clone(),
         quit:       quit.clone(),
     })
 }
@@ -82,7 +78,6 @@ fn handle_menu_event(app: &AppHandle, id: &str) {
             update_auto_start_menu(app, new_state);
         }
         "feedback" => { let _ = open::that("https://tally.so/r/aQGVKB"); }
-        "help"     => { let _ = open::that("https://xuwuwei.github.io/keyboard-help/"); }
         "quit" => {
             if let Some(state) = app.try_state::<crate::AppState>() {
                 if let Ok(mut m) = state.mdns_manager.lock() {
@@ -125,7 +120,6 @@ pub fn update_tray_lang(app: &AppHandle, lang: &str) {
     if let Some(items) = app.try_state::<TrayItems>() {
         let _ = items.show.set_text(i.show);
         let _ = items.feedback.set_text(i.feedback);
-        let _ = items.help.set_text(i.help);
         let _ = items.quit.set_text(i.quit);
         let enabled = crate::auto_start::AutoStartManager::new("KeyboardServer")
             .is_enabled().unwrap_or(false);

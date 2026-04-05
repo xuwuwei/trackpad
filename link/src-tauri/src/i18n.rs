@@ -4,7 +4,6 @@ pub struct TrayI18n {
     pub auto_start: &'static str,
     pub auto_start_on: &'static str,
     pub feedback: &'static str,
-    pub help: &'static str,
     pub quit: &'static str,
 }
 
@@ -15,7 +14,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "开机启动",
             auto_start_on: "开机启动 ✓",
             feedback: "反馈",
-            help: "帮助",
             quit: "退出",
         },
         "zhTW" => TrayI18n {
@@ -23,7 +21,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "開機啟動",
             auto_start_on: "開機啟動 ✓",
             feedback: "回饋",
-            help: "說明",
             quit: "退出",
         },
         "ja" => TrayI18n {
@@ -31,7 +28,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "自動起動",
             auto_start_on: "自動起動 ✓",
             feedback: "フィードバック",
-            help: "ヘルプ",
             quit: "終了",
         },
         "ko" => TrayI18n {
@@ -39,7 +35,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "자동 시작",
             auto_start_on: "자동 시작 ✓",
             feedback: "피드백",
-            help: "도움말",
             quit: "종료",
         },
         "fr" => TrayI18n {
@@ -47,7 +42,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "Démarrage auto",
             auto_start_on: "Démarrage auto ✓",
             feedback: "Commentaires",
-            help: "Aide",
             quit: "Quitter",
         },
         "de" => TrayI18n {
@@ -55,7 +49,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "Autostart",
             auto_start_on: "Autostart ✓",
             feedback: "Feedback",
-            help: "Hilfe",
             quit: "Beenden",
         },
         "es" => TrayI18n {
@@ -63,7 +56,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "Inicio automático",
             auto_start_on: "Inicio automático ✓",
             feedback: "Comentarios",
-            help: "Ayuda",
             quit: "Salir",
         },
         "pt" => TrayI18n {
@@ -71,7 +63,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "Início automático",
             auto_start_on: "Início automático ✓",
             feedback: "Comentários",
-            help: "Ajuda",
             quit: "Sair",
         },
         "ru" => TrayI18n {
@@ -79,7 +70,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "Автозапуск",
             auto_start_on: "Автозапуск ✓",
             feedback: "Обратная связь",
-            help: "Справка",
             quit: "Выход",
         },
         "hi" => TrayI18n {
@@ -87,7 +77,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "स्वत: प्रारंभ",
             auto_start_on: "स्वत: प्रारंभ ✓",
             feedback: "प्रतिक्रिया",
-            help: "सहायता",
             quit: "बाहर निकलें",
         },
         "id" => TrayI18n {
@@ -95,7 +84,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "Mulai otomatis",
             auto_start_on: "Mulai otomatis ✓",
             feedback: "Umpan balik",
-            help: "Bantuan",
             quit: "Keluar",
         },
         "vi" => TrayI18n {
@@ -103,7 +91,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "Khởi động tự động",
             auto_start_on: "Khởi động tự động ✓",
             feedback: "Phản hồi",
-            help: "Trợ giúp",
             quit: "Thoát",
         },
         "ar" => TrayI18n {
@@ -111,7 +98,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "بدء تلقائي",
             auto_start_on: "بدء تلقائي ✓",
             feedback: "ملاحظات",
-            help: "مساعدة",
             quit: "خروج",
         },
         _ => TrayI18n {
@@ -119,7 +105,6 @@ pub fn tray_i18n(lang: &str) -> TrayI18n {
             auto_start: "Auto Start",
             auto_start_on: "Auto Start ✓",
             feedback: "Feedback",
-            help: "Help",
             quit: "Quit",
         },
     }
