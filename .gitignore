@@ -1,0 +1,18 @@
+# Exclude app directory - only link project will be uploaded to GitHub
+app/
+
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build outputs
+dist/
+build/

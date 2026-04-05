@@ -1,0 +1,16 @@
+{
+  "name": "multilink-server",
+  "version": "0.1.0",
+  "description": "MultiLinkServer - PC端键盘/触摸板模拟器",
+  "scripts": {
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "@capacitor-community/admob": "^7.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}

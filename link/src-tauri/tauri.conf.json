@@ -1,0 +1,46 @@
+{
+  "productName": "MultiLinkServer",
+  "version": "0.1.0",
+  "identifier": "com.multilinkserver.app",
+  "build": {
+    "frontendDist": "../ui"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "label": "main",
+        "fullscreen": false,
+        "height": 450,
+        "resizable": false,
+        "title": "MultiLinkServer",
+        "width": 500,
+        "center": true,
+        "visible": false
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "category": "Utility",
+    "copyright": "",
+    "icon": ["icons/icon.icns", "icons/icon.ico", "icons/icon.png"],
+    "longDescription": "",
+    "shortDescription": "",
+    "macOS": {
+      "entitlements": "entitlements.plist",
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    },
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    }
+  }
+}
