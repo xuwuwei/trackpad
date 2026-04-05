@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-macos-intel:
+  build-macos-universal:
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -26,7 +26,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-apple-darwin
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
 
       - name: Install dependencies
         working-directory: link
@@ -35,53 +35,60 @@ jobs:
       - name: Install Tauri CLI
         run: cargo install tauri-cli --version "^2.0.0" --locked
 
-      - name: Build macOS Intel app
+      - name: Build Intel macOS app
         working-directory: link
         run: cargo tauri build --target x86_64-apple-darwin
 
-      - name: Upload macOS Intel artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-app-intel
-          path: |
-            link/target/x86_64-apple-darwin/release/bundle/**/*.dmg
-          if-no-files-found: warn
-
-  build-macos-arm:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: link/package-lock.json
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: aarch64-apple-darwin
-
-      - name: Install dependencies
-        working-directory: link
-        run: npm ci
-
-      - name: Install Tauri CLI
-        run: cargo install tauri-cli --version "^2.0.0" --locked
-
-      - name: Build macOS Apple Silicon app
+      - name: Build ARM macOS app
         working-directory: link
         run: cargo tauri build --target aarch64-apple-darwin
 
-      - name: Upload macOS ARM artifact
+      - name: Create Universal Binary and DMG
+        working-directory: link
+        run: |
+          # 创建通用目录结构
+          mkdir -p target/universal-apple-darwin/release/bundle/macos
+          mkdir -p target/universal-apple-darwin/release/bundle/dmg
+
+          # 复制 ARM 版本作为基础
+          cp -r target/aarch64-apple-darwin/release/bundle/macos/RemotePadServer.app \
+            target/universal-apple-darwin/release/bundle/macos/
+
+          # 使用 lipo 合并为通用二进制
+          lipo -create \
+            target/x86_64-apple-darwin/release/RemotePadServer \
+            target/aarch64-apple-darwin/release/RemotePadServer \
+            -output target/universal-apple-darwin/release/bundle/macos/RemotePadServer.app/Contents/MacOS/RemotePadServer
+
+          # 验证通用二进制
+          echo "=== Verifying universal binary ==="
+          lipo -info target/universal-apple-darwin/release/bundle/macos/RemotePadServer.app/Contents/MacOS/RemotePadServer
+
+          # 创建通用 DMG - 使用 ARM 版本的 DMG 修改
+          if [ -f target/aarch64-apple-darwin/release/bundle/dmg/*.dmg ]; then
+            # 复制并改名
+            cp target/aarch64-apple-darwin/release/bundle/dmg/*.dmg \
+              target/universal-apple-darwin/release/bundle/dmg/RemotePadServer_0.1.0_universal.dmg
+          else
+            # 使用 macOS 内置工具创建 DMG
+            echo "Creating DMG with hdiutil..."
+            hdiutil create \
+              -volname "RemotePadServer" \
+              -srcfolder target/universal-apple-darwin/release/bundle/macos/RemotePadServer.app \
+              -ov \
+              -format UDZO \
+              target/universal-apple-darwin/release/bundle/dmg/RemotePadServer_0.1.0_universal.dmg
+          fi
+
+          echo "=== Universal app created ==="
+          ls -la target/universal-apple-darwin/release/bundle/dmg/
+
+      - name: Upload macOS Universal artifact
         uses: actions/upload-artifact@v4
         with:
-          name: macos-app-arm
+          name: macos-app-universal
           path: |
-            link/target/aarch64-apple-darwin/release/bundle/**/*.dmg
+            link/target/universal-apple-darwin/release/bundle/dmg/*.dmg
           if-no-files-found: warn
 
   build-windows:
@@ -121,21 +128,15 @@ jobs:
           if-no-files-found: warn
 
   release:
-    needs: [build-macos-intel, build-macos-arm, build-windows]
+    needs: [build-macos-universal, build-windows]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
-      - name: Download macOS Intel artifact
+      - name: Download macOS Universal artifact
         uses: actions/download-artifact@v4
         with:
-          name: macos-app-intel
-          path: ./artifacts/macos-intel
-
-      - name: Download macOS ARM artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: macos-app-arm
-          path: ./artifacts/macos-arm
+          name: macos-app-universal
+          path: ./artifacts/macos
 
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
