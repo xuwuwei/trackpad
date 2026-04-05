@@ -1,7 +1,7 @@
 {
   "productName": "RemotePadServer",
   "version": "0.1.0",
-  "identifier": "com.remotepad.app",
+  "identifier": "com.xumingxun.trackpad.server",
   "build": {
     "frontendDist": "../ui"
   },
@@ -35,7 +35,7 @@
       "exceptionDomain": "",
       "frameworks": [],
       "providerShortName": null,
-      "signingIdentity": null
+      "signingIdentity": "Developer ID Application: hefen zhao (9HBAJ6NGZM)"
     },
     "windows": {
       "certificateThumbprint": null,
