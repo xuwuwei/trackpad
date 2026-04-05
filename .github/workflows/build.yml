@@ -24,7 +24,7 @@ jobs:
           cache-dependency-path: link/package-lock.json
 
       - name: Install Rust
-        uses: dtolnay/rust-action@stable
+        uses: dtolnay/rust-action@master
 
       - name: Install dependencies
         working-directory: link
@@ -32,15 +32,15 @@ jobs:
 
       - name: Build macOS app
         working-directory: link
-        run: npm run tauri build -- --target universal-apple-darwin
+        run: npm run tauri build -- --target aarch64-apple-darwin
 
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-app
           path: |
-            link/src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
-            link/src-tauri/target/universal-apple-darwin/release/bundle/macos/*.app
+            link/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
+            link/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/*.app
           if-no-files-found: warn
 
   build-windows:
@@ -57,7 +57,7 @@ jobs:
           cache-dependency-path: link/package-lock.json
 
       - name: Install Rust
-        uses: dtolnay/rust-action@stable
+        uses: dtolnay/rust-action@master
 
       - name: Install dependencies
         working-directory: link
