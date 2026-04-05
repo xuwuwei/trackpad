@@ -1,5 +1,5 @@
 {
-  "productName": "RemotePad: Wireless Trackpad",
+  "productName": "RemotePadServer",
   "version": "0.1.0",
   "identifier": "com.remotepad.app",
   "build": {
@@ -16,7 +16,7 @@
         "fullscreen": false,
         "height": 450,
         "resizable": false,
-        "title": "RemotePad: Wireless Trackpad",
+        "title": "RemotePadServer",
         "width": 500,
         "center": true,
         "visible": false
