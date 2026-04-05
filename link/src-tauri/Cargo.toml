@@ -1,5 +1,5 @@
 [package]
-name = "MultiLinkServer"
+name = "RemotePadServer"
 version = "0.1.0"
 description = "MultiLinkServer"
 authors = ["you"]
