@@ -32,25 +32,28 @@ jobs:
         working-directory: link
         run: npm ci
 
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2.0.0" --locked
+
       - name: Build macOS app
         working-directory: link
-        run: npm run tauri build -- --target aarch64-apple-darwin
+        run: cargo tauri build --target aarch64-apple-darwin
 
       - name: List bundle directory
         run: |
-          echo "Listing target directory:"
-          find link/src-tauri/target -name "*.dmg" -o -name "*.app" 2>/dev/null || echo "No dmg/app found"
+          echo "=== Target structure ==="
+          find link/target -type d -name "bundle" 2>/dev/null || echo "No bundle dir"
           echo ""
-          echo "Full bundle structure:"
-          ls -la link/src-tauri/target/aarch64-apple-darwin/release/bundle/ 2>/dev/null || echo "Bundle dir not found"
+          echo "=== All files in target ==="
+          find link/target -name "*.dmg" -o -name "*.app" 2>/dev/null | head -20
 
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-app
           path: |
-            link/src-tauri/target/aarch64-apple-darwin/release/bundle/**/*.dmg
-            link/src-tauri/target/aarch64-apple-darwin/release/bundle/**/*.app
+            link/target/**/release/bundle/**/*.dmg
+            link/target/**/release/bundle/**/*.app
           if-no-files-found: warn
 
   build-windows:
@@ -73,26 +76,26 @@ jobs:
         working-directory: link
         run: npm ci
 
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2.0.0" --locked
+
       - name: Build Windows app
         working-directory: link
-        run: npm run tauri build
+        run: cargo tauri build
 
       - name: List bundle directory
         shell: pwsh
         run: |
-          Write-Host "Listing target directory..."
-          Get-ChildItem -Path "link/src-tauri/target" -Recurse -Include "*.msi","*.exe" -ErrorAction SilentlyContinue | Select-Object FullName
-          Write-Host ""
-          Write-Host "Bundle structure:"
-          Get-ChildItem -Path "link/src-tauri/target/release/bundle" -Recurse -ErrorAction SilentlyContinue
+          Write-Host "=== Searching for bundle files ==="
+          Get-ChildItem -Path "link/target" -Recurse -Include "*.msi","*.exe" -ErrorAction SilentlyContinue | Select-Object -First 10 FullName
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-app
           path: |
-            link/src-tauri/target/release/bundle/**/*.msi
-            link/src-tauri/target/release/bundle/**/*.exe
+            link/target/**/release/bundle/**/*.msi
+            link/target/**/release/bundle/**/*.exe
           if-no-files-found: warn
 
   release:
