@@ -56,8 +56,8 @@ jobs:
 
           # 使用 lipo 合并为通用二进制
           lipo -create \
-            target/x86_64-apple-darwin/release/RemotePadServer \
-            target/aarch64-apple-darwin/release/RemotePadServer \
+            target/x86_64-apple-darwin/release/bundle/macos/RemotePadServer.app/Contents/MacOS/RemotePadServer \
+            target/aarch64-apple-darwin/release/bundle/macos/RemotePadServer.app/Contents/MacOS/RemotePadServer \
             -output target/universal-apple-darwin/release/bundle/macos/RemotePadServer.app/Contents/MacOS/RemotePadServer
 
           # 验证通用二进制
