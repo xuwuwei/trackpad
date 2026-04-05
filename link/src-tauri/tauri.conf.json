@@ -1,7 +1,7 @@
 {
-  "productName": "MultiLinkServer",
+  "productName": "RemotePad: Wireless Trackpad",
   "version": "0.1.0",
-  "identifier": "com.multilinkserver.app",
+  "identifier": "com.remotepad.app",
   "build": {
     "frontendDist": "../ui"
   },
@@ -16,7 +16,7 @@
         "fullscreen": false,
         "height": 450,
         "resizable": false,
-        "title": "MultiLinkServer",
+        "title": "RemotePad: Wireless Trackpad",
         "width": 500,
         "center": true,
         "visible": false
